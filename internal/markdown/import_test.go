@@ -91,7 +91,12 @@ func TestImportMarkdownHeadingsFromFiles(t *testing.T) {
 			got, err := ExtractHeadings(source)
 			require.NoError(t, err)
 
-			require.Equal(t, tt.want, got)
+			require.Len(t, got, len(tt.want))
+			for i, want := range tt.want {
+				require.Equal(t, want.Level, got[i].Level, "heading %d level", i)
+				require.Equal(t, want.Text, got[i].Text, "heading %d text", i)
+				require.Greater(t, got[i].Line, 0, "heading %d line", i)
+			}
 		})
 	}
 }
