@@ -53,9 +53,9 @@ func main() {
 		if err := cmd.Run(); err != nil {
 			fatal(err)
 		}
-	}
 
-	fmt.Println("done!")
+		fmt.Println("done!")
+	}
 }
 
 func executableName(name string) string {

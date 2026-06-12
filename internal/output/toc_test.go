@@ -35,10 +35,10 @@ func TestRenderToc(t *testing.T) {
 			opts:     TocOptions{MinLevel: 1, MaxLevel: 6, Ordered: true},
 			expected: strings.TrimSpace(`
 1. [Install](#install)
-1. [Usage](#usage)
-  1. [Markdown output](#markdown-output)
-  1. [JSON output](#json-output)
-1. [License](#license)
+2. [Usage](#usage)
+  2.1. [Markdown output](#markdown-output)
+  2.2. [JSON output](#json-output)
+3. [License](#license)
 			`),
 		},
 		{
@@ -59,10 +59,34 @@ func TestRenderToc(t *testing.T) {
 			opts:     TocOptions{MinLevel: 1, MaxLevel: 6, Ordered: true, NoLinks: true},
 			expected: strings.TrimSpace(`
 1. Install
-1. Usage
-  1. Markdown output
-  1. JSON output
-1. License
+2. Usage
+  2.1. Markdown output
+  2.2. JSON output
+3. License
+			`),
+		},
+		{
+			name:     "unordered no indent",
+			headings: tocHeadings,
+			opts:     TocOptions{MinLevel: 1, MaxLevel: 6, NoIndent: true},
+			expected: strings.TrimSpace(`
+- [Install](#install)
+- [Usage](#usage)
+- [Markdown output](#markdown-output)
+- [JSON output](#json-output)
+- [License](#license)
+			`),
+		},
+		{
+			name:     "ordered no indent",
+			headings: tocHeadings,
+			opts:     TocOptions{MinLevel: 1, MaxLevel: 6, Ordered: true, NoIndent: true},
+			expected: strings.TrimSpace(`
+1. [Install](#install)
+2. [Usage](#usage)
+2.1. [Markdown output](#markdown-output)
+2.2. [JSON output](#json-output)
+3. [License](#license)
 			`),
 		},
 		{
@@ -119,6 +143,26 @@ func TestRenderToc(t *testing.T) {
 			expected: strings.TrimSpace(`
 - [Hello, World!](#hello-world)
   - [What's next?](#whats-next)
+			`),
+		},
+		{
+			name: "hierarchical ordered",
+			headings: []markdown.Heading{
+				{Level: 1, Text: "First"},
+				{Level: 2, Text: "First sub-level"},
+				{Level: 2, Text: "Second sub-level"},
+				{Level: 3, Text: "First sub-sub-level"},
+				{Level: 2, Text: "Third sub-level"},
+				{Level: 1, Text: "Second"},
+			},
+			opts: TocOptions{MinLevel: 1, MaxLevel: 6, Ordered: true, NoLinks: true},
+			expected: strings.TrimSpace(`
+1. First
+  1.1. First sub-level
+  1.2. Second sub-level
+    1.2.1. First sub-sub-level
+  1.3. Third sub-level
+2. Second
 			`),
 		},
 		{

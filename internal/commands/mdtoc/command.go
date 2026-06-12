@@ -18,6 +18,7 @@ type Options struct {
 	MaxLevel int
 	Ordered  bool
 	NoLinks  bool
+	NoIndent bool
 }
 
 func Execute() {
@@ -48,6 +49,7 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) error {
 		MaxLevel: opts.MaxLevel,
 		Ordered:  opts.Ordered,
 		NoLinks:  opts.NoLinks,
+		NoIndent: opts.NoIndent,
 	})
 
 	_, err = fmt.Fprint(stdout, toc)
@@ -67,10 +69,11 @@ func parseOptions(args []string, stderr io.Writer) (Options, error) {
 	fs.IntVar(&opts.MaxLevel, "max-level", 6, "maximum heading level to include")
 	fs.BoolVar(&opts.Ordered, "ordered", false, "use ordered list markers")
 	fs.BoolVar(&opts.NoLinks, "no-links", false, "output plain heading text without links")
+	fs.BoolVar(&opts.NoIndent, "no-indent", false, "output without indenting nested items")
 
 	fs.Usage = func() {
 		exe := filepath.Base(os.Args[0])
-		fmt.Fprintf(stderr, "usage: %s [--min-level N] [--max-level N] [--ordered] [--no-links] input.md\n", exe)
+		fmt.Fprintf(stderr, "usage: %s [--min-level N] [--max-level N] [--ordered] [--no-links] [--no-indent] input.md\n", exe)
 		fs.PrintDefaults()
 	}
 

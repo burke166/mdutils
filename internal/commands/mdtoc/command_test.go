@@ -123,8 +123,38 @@ func TestRunOrderedAndNoLinks(t *testing.T) {
 
 	output := stdout.String()
 	require.Contains(t, output, "1. Simple Document")
-	require.Contains(t, output, "  1. Getting Started")
+	require.Contains(t, output, "  1.1. Getting Started")
 	require.NotContains(t, output, "[")
+}
+
+func TestRunNoIndent(t *testing.T) {
+	path := filepath.Join("..", "..", "..", "testdata", "simple.md")
+
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+
+	err := Run([]string{"--no-indent", path}, &stdout, &stderr)
+	require.NoError(t, err)
+
+	output := stdout.String()
+	require.NotContains(t, output, "  -")
+	require.Contains(t, output, "- [Simple Document](#simple-document)")
+	require.Contains(t, output, "- [Getting Started](#getting-started)")
+}
+
+func TestRunNoIndentOrdered(t *testing.T) {
+	path := filepath.Join("..", "..", "..", "testdata", "simple.md")
+
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+
+	err := Run([]string{"--no-indent", "--ordered", path}, &stdout, &stderr)
+	require.NoError(t, err)
+
+	output := stdout.String()
+	require.NotContains(t, output, "  1.")
+	require.Contains(t, output, "1. [Simple Document](#simple-document)")
+	require.Contains(t, output, "1.1. [Getting Started](#getting-started)")
 }
 
 func TestValidateLevels(t *testing.T) {
