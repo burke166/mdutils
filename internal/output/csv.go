@@ -8,7 +8,7 @@ import (
 	"github.com/computercodeblue/mdutils/internal/markdown"
 )
 
-func RenderCSV(headings []markdown.Heading) (string, error) {
+func RenderCsv(headings []markdown.Heading) (string, error) {
 	var b strings.Builder
 	w := csv.NewWriter(&b)
 

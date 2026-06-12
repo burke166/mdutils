@@ -16,9 +16,9 @@ func Render(headings []markdown.Heading, format string) (string, error) {
 	case "numbered":
 		return output.RenderNumbered(headings), nil
 	case "json":
-		return output.RenderJSON(headings)
+		return output.RenderJson(headings)
 	case "csv":
-		return output.RenderCSV(headings)
+		return output.RenderCsv(headings)
 	case "headings":
 		return output.RenderMarkdownHeadings(headings), nil
 	default:

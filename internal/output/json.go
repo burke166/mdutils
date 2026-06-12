@@ -6,7 +6,7 @@ import (
 	"github.com/computercodeblue/mdutils/internal/markdown"
 )
 
-func RenderJSON(headings []markdown.Heading) (string, error) {
+func RenderJson(headings []markdown.Heading) (string, error) {
 	data, err := json.MarshalIndent(headings, "", "  ")
 	if err != nil {
 		return "", err

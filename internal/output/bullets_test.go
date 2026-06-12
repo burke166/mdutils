@@ -1,0 +1,61 @@
+package output
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/computercodeblue/mdutils/internal/markdown"
+)
+
+func TestBullets(t *testing.T) {
+	tests := []struct {
+		name     string
+		headings []markdown.Heading
+		expected string
+	}{
+		{
+			name:     "empty",
+			headings: emptyHeadings,
+			expected: "",
+		},
+		{
+			name:     "single",
+			headings: singleHeading,
+			expected: "- README",
+		},
+		{
+			name:     "nested",
+			headings: testHeadings,
+			expected: strings.TrimSpace(`
+- Adventure Wargame
+- Character Creation
+	- Attributes
+- Equipment
+			`),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := strings.TrimSpace(RenderBullets(tt.headings))
+			if actual != tt.expected {
+
+			}
+		})
+	}
+}
+
+func TestRenderBullets(t *testing.T) {
+	actual := strings.TrimSpace(RenderBullets(testHeadings))
+
+	expected := strings.TrimSpace(`
+- Adventure Wargame
+  - Character Creation
+    - Attributes
+  - Equipment
+`)
+
+	if actual != expected {
+		t.Errorf("unexpected bullet output\n\nexpected:\n%s\n\nactual:\n%s", expected, actual)
+	}
+}
