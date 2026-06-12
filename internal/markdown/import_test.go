@@ -86,16 +86,11 @@ func TestImportMarkdownHeadingsFromFiles(t *testing.T) {
 			path := filepath.Join("..", "..", "testdata", tt.fileName)
 
 			source, err := os.ReadFile(path)
-			if err != nil {
-				t.Fatalf("unable to read file: %v", err)
-			}
+			require.NoError(t, err)
 
 			got, err := ExtractHeadings(source)
-			if err != nil {
-				t.Fatalf("unable to extract headings from source: %v", err)
-			}
-
 			require.NoError(t, err)
+
 			require.Equal(t, tt.want, got)
 		})
 	}

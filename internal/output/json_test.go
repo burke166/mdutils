@@ -2,24 +2,19 @@ package output
 
 import (
 	"encoding/json"
-	"reflect"
 	"testing"
 
 	"github.com/computercodeblue/mdutils/internal/markdown"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRenderJson(t *testing.T) {
 	actual, err := RenderJson(testHeadings)
-	if err != nil {
-		t.Fatalf("unable to render JSON: %v", err)
-	}
+	require.NoError(t, err)
 
 	var got []markdown.Heading
-	if err := json.Unmarshal([]byte(actual), &got); err != nil {
-		t.Fatalf("invalid JSON: %v", err)
-	}
+	err = json.Unmarshal([]byte(actual), &got)
+	require.NoError(t, err)
 
-	if !reflect.DeepEqual(got, testHeadings) {
-		t.Errorf("unexpected JSON output\n\ngot: %#v\n\nwant: %#v", got, testHeadings)
-	}
+	require.Equal(t, testHeadings, got)
 }

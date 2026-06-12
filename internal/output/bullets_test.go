@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/computercodeblue/mdutils/internal/markdown"
+	"github.com/stretchr/testify/require"
 )
 
 func TestBullets(t *testing.T) {
@@ -28,9 +29,9 @@ func TestBullets(t *testing.T) {
 			headings: testHeadings,
 			expected: strings.TrimSpace(`
 - Adventure Wargame
-- Character Creation
-	- Attributes
-- Equipment
+  - Character Creation
+    - Attributes
+  - Equipment
 			`),
 		},
 	}
@@ -38,24 +39,7 @@ func TestBullets(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			actual := strings.TrimSpace(RenderBullets(tt.headings))
-			if actual != tt.expected {
-
-			}
+			require.Equal(t, tt.expected, actual)
 		})
-	}
-}
-
-func TestRenderBullets(t *testing.T) {
-	actual := strings.TrimSpace(RenderBullets(testHeadings))
-
-	expected := strings.TrimSpace(`
-- Adventure Wargame
-  - Character Creation
-    - Attributes
-  - Equipment
-`)
-
-	if actual != expected {
-		t.Errorf("unexpected bullet output\n\nexpected:\n%s\n\nactual:\n%s", expected, actual)
 	}
 }

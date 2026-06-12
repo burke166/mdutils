@@ -12,5 +12,5 @@ var testHeadings = []markdown.Heading{
 var emptyHeadings = []markdown.Heading{}
 
 var singleHeading = []markdown.Heading{
-	{Level: 1, Text: "Single Heading"},
+	{Level: 1, Text: "README"},
 }

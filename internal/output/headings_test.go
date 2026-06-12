@@ -3,6 +3,8 @@ package output
 import (
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestRenderedHeadings(t *testing.T) {
@@ -15,7 +17,5 @@ func TestRenderedHeadings(t *testing.T) {
 ## Equipment
 `)
 
-	if actual != expected {
-		t.Errorf("unexpected headings output\n\nexpected:\n%s\n\nactual:\n%s", expected, actual)
-	}
+	require.Equal(t, expected, actual)
 }

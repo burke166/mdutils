@@ -3,6 +3,8 @@ package output
 import (
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestRenderNumbered(t *testing.T) {
@@ -15,7 +17,5 @@ func TestRenderNumbered(t *testing.T) {
   1.2. Equipment
 `)
 
-	if actual != expected {
-		t.Errorf("unexpected numbered output\n\nexpected:\n%s\n\nactual:\n%s", expected, actual)
-	}
+	require.Equal(t, expected, actual)
 }
