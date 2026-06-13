@@ -37,10 +37,10 @@ func renderFileText(b *strings.Builder, file FileStats) {
 	writeLabelInt(b, "Blank lines:", file.BlankLines)
 	writeLabelInt(b, "Words:", file.Words)
 	writeLabelInt(b, "Characters:", file.Characters)
-	fmt.Fprintf(b, "File size:          %s bytes\n", formatInt64(file.FileSizeBytes))
+	fmt.Fprintf(b, "File size:           %s bytes\n", formatInt64(file.FileSizeBytes))
 	writeLabelInt(b, "Paragraphs:", file.Paragraphs)
 	writeLabelInt(b, "Sentences:", file.Sentences)
-	fmt.Fprintf(b, "Reading time:       %s\n", formatMinutes(file.ReadingTimeMinutes))
+	fmt.Fprintf(b, "Reading time:        %s\n", formatMinutes(file.ReadingTimeMinutes))
 
 	b.WriteString("\nHeadings:\n")
 	writeLabelInt(b, "  H1:", file.Headings.H1)
