@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/computercodeblue/mdutils/internal/fileutil"
 	"github.com/computercodeblue/mdutils/internal/markdown"
 )
 
@@ -18,39 +19,47 @@ type Options struct {
 }
 
 func Execute() {
-	if err := Run(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+	code, err := Run(os.Args[1:], os.Stdout, os.Stderr)
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		os.Exit(2)
 	}
+	os.Exit(code)
 }
 
-func Run(args []string, stdout io.Writer, stderr io.Writer) error {
+func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 	opts, err := parseOptions(args, stderr)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	source, err := os.ReadFile(opts.Input)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	headings, err := markdown.ExtractHeadings(source)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	output, err := Render(headings, opts.Format)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	if opts.Output != "" {
-		return os.WriteFile(opts.Output, []byte(output), 0644)
+		if err := fileutil.WriteFileAtomically(opts.Output, []byte(output)); err != nil {
+			return 2, err
+		}
+		return 0, nil
 	}
 
-	_, err = fmt.Fprint(stdout, output)
-	return err
+	if _, err := fmt.Fprint(stdout, output); err != nil {
+		return 2, err
+	}
+
+	return 0, nil
 }
 
 func parseOptions(args []string, stderr io.Writer) (Options, error) {

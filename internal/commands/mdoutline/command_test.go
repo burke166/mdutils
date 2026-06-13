@@ -21,8 +21,9 @@ func TestRunSimpleDocumentDefaultBullets(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{path}, &stdout, &stderr)
+	code, err := Run([]string{path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	expected := strings.TrimSpace(`
 - Simple Document
@@ -43,8 +44,9 @@ func TestRunCodeBlocksDocument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{path}, &stdout, &stderr)
+	code, err := Run([]string{path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "- Code Block Test")
@@ -58,8 +60,9 @@ func TestRunFrontMatterDocument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{path}, &stdout, &stderr)
+	code, err := Run([]string{path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	expected := strings.TrimSpace(`
 - Front Matter Test
@@ -76,16 +79,18 @@ func TestRunMissingFile(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"does-not-exist.md"}, &stdout, &stderr)
+	code, err := Run([]string{"does-not-exist.md"}, &stdout, &stderr)
 	require.Error(t, err)
+	require.Equal(t, 2, code)
 }
 
 func TestRunMissingInputArgument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run(nil, &stdout, &stderr)
+	code, err := Run(nil, &stdout, &stderr)
 	require.Error(t, err)
+	require.Equal(t, 2, code)
 	require.Contains(t, err.Error(), "missing input Markdown file")
 }
 
@@ -95,8 +100,9 @@ func TestRunTreeFormat(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--tree", path}, &stdout, &stderr)
+	code, err := Run([]string{"--tree", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "Simple Document")
@@ -110,8 +116,9 @@ func TestRunNumberedFormat(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--numbered", path}, &stdout, &stderr)
+	code, err := Run([]string{"--numbered", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "1. Simple Document")
@@ -124,8 +131,9 @@ func TestRunJsonFormat(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--json", path}, &stdout, &stderr)
+	code, err := Run([]string{"--json", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, `"level": 1`)
@@ -138,8 +146,9 @@ func TestRunCsvFormat(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--csv", path}, &stdout, &stderr)
+	code, err := Run([]string{"--csv", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := strings.TrimSpace(stdout.String())
 	require.True(t, strings.HasPrefix(output, "level,text"))
@@ -153,8 +162,9 @@ func TestRunHeadingsFormat(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--headings", path}, &stdout, &stderr)
+	code, err := Run([]string{"--headings", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "# Simple Document")
@@ -168,8 +178,9 @@ func TestRunBulletsFormat(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--bullets", path}, &stdout, &stderr)
+	code, err := Run([]string{"--bullets", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	expected := strings.TrimSpace(`
 - Simple Document
@@ -190,8 +201,9 @@ func TestRunMultipleFormats(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--bullets", "--tree", path}, &stdout, &stderr)
+	code, err := Run([]string{"--bullets", "--tree", path}, &stdout, &stderr)
 	require.EqualError(t, err, "choose only one output format")
+	require.Equal(t, 2, code)
 }
 
 func TestRunOutputFile(t *testing.T) {
@@ -201,8 +213,9 @@ func TestRunOutputFile(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"-o", outPath, path}, &stdout, &stderr)
+	code, err := Run([]string{"-o", outPath, path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 	require.Empty(t, stdout.String())
 
 	written, err := os.ReadFile(outPath)
@@ -217,8 +230,9 @@ func TestRunOutputFileLongFlag(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--output", outPath, path}, &stdout, &stderr)
+	code, err := Run([]string{"--output", outPath, path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 	require.Empty(t, stdout.String())
 
 	written, err := os.ReadFile(outPath)

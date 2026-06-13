@@ -22,26 +22,28 @@ type Options struct {
 }
 
 func Execute() {
-	if err := Run(os.Args[1:], os.Stdout, os.Stderr); err != nil {
+	code, err := Run(os.Args[1:], os.Stdout, os.Stderr)
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		os.Exit(2)
 	}
+	os.Exit(code)
 }
 
-func Run(args []string, stdout io.Writer, stderr io.Writer) error {
+func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 	opts, err := parseOptions(args, stderr)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	source, err := os.ReadFile(opts.Input)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	headings, err := markdown.ExtractHeadings(source)
 	if err != nil {
-		return err
+		return 2, err
 	}
 
 	toc := output.RenderToc(headings, output.TocOptions{
@@ -52,8 +54,11 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) error {
 		NoIndent: opts.NoIndent,
 	})
 
-	_, err = fmt.Fprint(stdout, toc)
-	return err
+	if _, err := fmt.Fprint(stdout, toc); err != nil {
+		return 2, err
+	}
+
+	return 0, nil
 }
 
 func parseOptions(args []string, stderr io.Writer) (Options, error) {

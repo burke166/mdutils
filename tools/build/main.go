@@ -24,9 +24,6 @@ func main() {
 		}
 
 		hasMain := hasMain(command)
-		if err != nil {
-			fatal(err)
-		}
 		if !hasMain {
 			continue
 		}

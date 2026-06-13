@@ -15,8 +15,9 @@ func TestRunSimpleDocument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{path}, &stdout, &stderr)
+	code, err := Run([]string{path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	expected := strings.TrimSpace(`
 - [Simple Document](#simple-document)
@@ -37,8 +38,9 @@ func TestRunCodeBlocksDocument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{path}, &stdout, &stderr)
+	code, err := Run([]string{path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "- [Code Block Test](#code-block-test)")
@@ -52,8 +54,9 @@ func TestRunFrontMatterDocument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{path}, &stdout, &stderr)
+	code, err := Run([]string{path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	expected := strings.TrimSpace(`
 - [Front Matter Test](#front-matter-test)
@@ -70,16 +73,18 @@ func TestRunMissingFile(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"does-not-exist.md"}, &stdout, &stderr)
+	code, err := Run([]string{"does-not-exist.md"}, &stdout, &stderr)
 	require.Error(t, err)
+	require.Equal(t, 2, code)
 }
 
 func TestRunMissingInputArgument(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run(nil, &stdout, &stderr)
+	code, err := Run(nil, &stdout, &stderr)
 	require.Error(t, err)
+	require.Equal(t, 2, code)
 	require.Contains(t, err.Error(), "missing input Markdown file")
 }
 
@@ -89,8 +94,9 @@ func TestRunMinLevel(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--min-level", "2", path}, &stdout, &stderr)
+	code, err := Run([]string{"--min-level", "2", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.NotContains(t, output, "Simple Document")
@@ -103,8 +109,9 @@ func TestRunMaxLevel(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--max-level", "2", path}, &stdout, &stderr)
+	code, err := Run([]string{"--max-level", "2", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "- [Simple Document](#simple-document)")
@@ -118,8 +125,9 @@ func TestRunOrderedAndNoLinks(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--ordered", "--no-links", path}, &stdout, &stderr)
+	code, err := Run([]string{"--ordered", "--no-links", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.Contains(t, output, "1. Simple Document")
@@ -133,8 +141,9 @@ func TestRunNoIndent(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--no-indent", path}, &stdout, &stderr)
+	code, err := Run([]string{"--no-indent", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.NotContains(t, output, "  -")
@@ -148,8 +157,9 @@ func TestRunNoIndentOrdered(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--no-indent", "--ordered", path}, &stdout, &stderr)
+	code, err := Run([]string{"--no-indent", "--ordered", path}, &stdout, &stderr)
 	require.NoError(t, err)
+	require.Equal(t, 0, code)
 
 	output := stdout.String()
 	require.NotContains(t, output, "  1.")
@@ -208,8 +218,9 @@ func TestRunInvalidMinLevel(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--min-level", "0", path}, &stdout, &stderr)
+	code, err := Run([]string{"--min-level", "0", path}, &stdout, &stderr)
 	require.EqualError(t, err, "min-level must be at least 1")
+	require.Equal(t, 2, code)
 }
 
 func TestRunInvalidMaxLevel(t *testing.T) {
@@ -218,8 +229,9 @@ func TestRunInvalidMaxLevel(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--max-level", "7", path}, &stdout, &stderr)
+	code, err := Run([]string{"--max-level", "7", path}, &stdout, &stderr)
 	require.EqualError(t, err, "max-level must be at most 6")
+	require.Equal(t, 2, code)
 }
 
 func TestRunInvalidLevelRange(t *testing.T) {
@@ -228,6 +240,7 @@ func TestRunInvalidLevelRange(t *testing.T) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
 
-	err := Run([]string{"--min-level", "4", "--max-level", "2", path}, &stdout, &stderr)
+	code, err := Run([]string{"--min-level", "4", "--max-level", "2", path}, &stdout, &stderr)
 	require.EqualError(t, err, "min-level must not be greater than max-level")
+	require.Equal(t, 2, code)
 }

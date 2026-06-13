@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/computercodeblue/mdutils/internal/fileutil"
 )
 
 type Options struct {
@@ -18,7 +20,9 @@ func Execute() {
 	code, err := Run(os.Args[1:], os.Stdout, os.Stderr)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(2)
+		if code == 0 {
+			code = 2
+		}
 	}
 	os.Exit(code)
 }
@@ -31,11 +35,7 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 
 	files, err := CollectMarkdownFiles(opts.Inputs)
 	if err != nil {
-		if IsNotExist(err) {
-			return 2, err
-		}
-		fmt.Fprintln(stderr, "error:", err)
-		return 1, nil
+		return CollectExitCode(err), err
 	}
 
 	contents, err := ReadMarkdownFiles(files)
@@ -52,7 +52,7 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 		return 0, nil
 	}
 
-	if err := os.WriteFile(opts.Out, []byte(merged), 0644); err != nil {
+	if err := fileutil.WriteFileAtomically(opts.Out, []byte(merged)); err != nil {
 		return 2, err
 	}
 

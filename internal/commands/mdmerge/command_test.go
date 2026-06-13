@@ -125,8 +125,9 @@ func TestRunEmptyDirectory(t *testing.T) {
 
 	var stdout, stderr bytes.Buffer
 	code, err := Run([]string{dir}, &stdout, &stderr)
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, 1, code)
+	require.Contains(t, err.Error(), "no Markdown files")
 }
 
 func TestRunMissingInputs(t *testing.T) {

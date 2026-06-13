@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"unicode"
+
+	"github.com/computercodeblue/mdutils/internal/markdown"
 )
 
 type Section struct {
@@ -18,7 +20,7 @@ func SplitMarkdown(content string, level int) ([]Section, error) {
 		return nil, fmt.Errorf("heading level must be between 1 and 6")
 	}
 
-	lines := splitLines(content)
+	lines := markdown.SplitLines(content)
 	var sections []Section
 	var current *Section
 	var preamble []string
@@ -51,7 +53,7 @@ func SplitMarkdown(content string, level int) ([]Section, error) {
 	}
 
 	for _, line := range lines {
-		isFence, char := isFenceLine(line)
+		isFence, char := markdown.IsFenceLine(line)
 		if isFence {
 			if !inFence {
 				inFence = true
@@ -92,13 +94,6 @@ func SplitMarkdown(content string, level int) ([]Section, error) {
 	return sections, nil
 }
 
-func splitLines(content string) []string {
-	if content == "" {
-		return nil
-	}
-	return strings.SplitAfter(content, "\n")
-}
-
 func joinLines(lines []string) string {
 	return strings.Join(lines, "")
 }
@@ -112,18 +107,6 @@ func trimSectionContent(content string) string {
 		return content
 	}
 	return strings.TrimRight(content, "\n") + "\n"
-}
-
-func isFenceLine(line string) (bool, byte) {
-	trimmed := strings.TrimLeft(line, " \t")
-	switch {
-	case strings.HasPrefix(trimmed, "```"):
-		return true, '`'
-	case strings.HasPrefix(trimmed, "~~~"):
-		return true, '~'
-	default:
-		return false, 0
-	}
 }
 
 func headingLevel(line string) int {

@@ -93,3 +93,18 @@ func ReadMarkdownFiles(paths []string) ([]string, error) {
 func IsNotExist(err error) bool {
 	return errors.Is(err, fs.ErrNotExist)
 }
+
+// CollectExitCode maps CollectMarkdownFiles errors to CLI exit codes.
+func CollectExitCode(err error) int {
+	if err == nil {
+		return 0
+	}
+	if IsNotExist(err) {
+		return 2
+	}
+	var pathErr *os.PathError
+	if errors.As(err, &pathErr) {
+		return 2
+	}
+	return 1
+}

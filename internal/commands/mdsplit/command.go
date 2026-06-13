@@ -7,6 +7,8 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+
+	"github.com/computercodeblue/mdutils/internal/fileutil"
 )
 
 type Options struct {
@@ -19,7 +21,9 @@ func Execute() {
 	code, err := Run(os.Args[1:], os.Stdout, os.Stderr)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(2)
+		if code == 0 {
+			code = 2
+		}
 	}
 	os.Exit(code)
 }
@@ -37,8 +41,7 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 
 	sections, err := SplitMarkdown(string(source), opts.Level)
 	if err != nil {
-		fmt.Fprintln(stderr, "error:", err)
-		return 1, nil
+		return 1, err
 	}
 
 	outDir := opts.Out
@@ -54,7 +57,7 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 	for _, section := range sections {
 		filename := sectionFilename(section, used)
 		path := filepath.Join(outDir, filename)
-		if err := os.WriteFile(path, []byte(section.Content), 0644); err != nil {
+		if err := fileutil.WriteFileAtomically(path, []byte(section.Content)); err != nil {
 			return 2, err
 		}
 	}

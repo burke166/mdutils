@@ -118,7 +118,7 @@ func TestRunNoMatchingHeadings(t *testing.T) {
 
 	var stdout, stderr bytes.Buffer
 	code, err := Run([]string{path}, &stdout, &stderr)
-	require.NoError(t, err)
+	require.Error(t, err)
 	require.Equal(t, 1, code)
 }
 
