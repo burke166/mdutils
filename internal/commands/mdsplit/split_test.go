@@ -93,6 +93,45 @@ func TestEnsureUniqueFilename(t *testing.T) {
 	require.Equal(t, "introduction-3", EnsureUniqueFilename("introduction", used))
 }
 
+func TestNumberingWidth(t *testing.T) {
+	tests := []struct {
+		totalFiles int
+		expected   int
+	}{
+		{totalFiles: 8, expected: 2},
+		{totalFiles: 27, expected: 2},
+		{totalFiles: 99, expected: 2},
+		{totalFiles: 100, expected: 3},
+		{totalFiles: 103, expected: 3},
+		{totalFiles: 1432, expected: 4},
+	}
+
+	for _, tt := range tests {
+		require.Equal(t, tt.expected, NumberingWidth(tt.totalFiles), "totalFiles=%d", tt.totalFiles)
+	}
+}
+
+func TestNumberPrefix(t *testing.T) {
+	require.Equal(t, "01_", NumberPrefix(2, 1))
+	require.Equal(t, "09_", NumberPrefix(2, 9))
+	require.Equal(t, "100_", NumberPrefix(3, 100))
+	require.Equal(t, "0001_", NumberPrefix(4, 1))
+}
+
+func TestSectionFilename(t *testing.T) {
+	section := Section{Heading: "Introduction", Slug: "introduction"}
+
+	used := make(map[string]int)
+	require.Equal(t, "introduction.md", SectionFilename(section, used, ""))
+
+	used = make(map[string]int)
+	require.Equal(t, "01_introduction.md", SectionFilename(section, used, "01_"))
+
+	preamble := Section{}
+	require.Equal(t, "00-preamble.md", SectionFilename(preamble, used, ""))
+	require.Equal(t, "01_00-preamble.md", SectionFilename(preamble, used, "01_"))
+}
+
 func TestSplitMarkdownPreservesBlankLines(t *testing.T) {
 	content := "# Title\n\n\n\nParagraph with blank lines.\n\n# Next\n\nDone.\n"
 

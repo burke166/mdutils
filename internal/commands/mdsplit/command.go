@@ -12,9 +12,10 @@ import (
 )
 
 type Options struct {
-	Input string
-	Level int
-	Out   string
+	Input    string
+	Level    int
+	Out      string
+	Numbered bool
 }
 
 func Execute() {
@@ -54,8 +55,13 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 	}
 
 	used := make(map[string]int)
-	for _, section := range sections {
-		filename := sectionFilename(section, used)
+	width := NumberingWidth(len(sections))
+	for i, section := range sections {
+		numberPrefix := ""
+		if opts.Numbered {
+			numberPrefix = NumberPrefix(width, i+1)
+		}
+		filename := SectionFilename(section, used, numberPrefix)
 		path := filepath.Join(outDir, filename)
 		if err := fileutil.WriteFileAtomically(path, []byte(section.Content)); err != nil {
 			return 2, err
@@ -63,15 +69,6 @@ func Run(args []string, stdout io.Writer, stderr io.Writer) (int, error) {
 	}
 
 	return 0, nil
-}
-
-func sectionFilename(section Section, used map[string]int) string {
-	if section.Heading == "" {
-		return "00-preamble.md"
-	}
-
-	base := EnsureUniqueFilename(section.Slug, used)
-	return base + ".md"
 }
 
 func parseOptions(args []string, stderr io.Writer) (Options, error) {
@@ -83,10 +80,12 @@ func parseOptions(args []string, stderr io.Writer) (Options, error) {
 
 	fs.IntVar(&opts.Level, "level", 1, "heading level to split on")
 	fs.StringVar(&opts.Out, "out", "", "destination folder")
+	fs.BoolVar(&opts.Numbered, "n", false, "prefix output filenames with sequential numbers")
+	fs.BoolVar(&opts.Numbered, "numbered", false, "prefix output filenames with sequential numbers")
 
 	fs.Usage = func() {
 		exe := filepath.Base(os.Args[0])
-		fmt.Fprintf(stderr, "usage: %s [--level N] [--out dir] file.md\n", exe)
+		fmt.Fprintf(stderr, "usage: %s [--level N] [--out dir] [--numbered] file.md\n", exe)
 		fs.PrintDefaults()
 	}
 

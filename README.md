@@ -36,8 +36,20 @@ mdtoc --min-level 2 --max-level 4 README.md
 Split a Markdown file into multiple files by heading level.
 
 ```bash
-mdsplit --level 2 README.md
+mdsplit handbook.md
+mdsplit handbook.md --numbered
+mdsplit handbook.md --level 2 --numbered
 mdsplit --level 2 --out parts README.md
+```
+
+With `--numbered` (or `-n`), each output file is prefixed with a zero-padded sequential number so files sort correctly in file managers and Git:
+
+```text
+01_introduction.md
+02_installation.md
+03_configuration.md
+04_examples.md
+05_reference.md
 ```
 
 ### mdmerge

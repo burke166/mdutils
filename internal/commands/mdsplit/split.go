@@ -3,6 +3,7 @@ package mdsplit
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -190,6 +191,25 @@ func isIllegalFilenameRune(r rune) bool {
 	default:
 		return false
 	}
+}
+
+func NumberingWidth(totalFiles int) int {
+	return max(2, len(strconv.Itoa(totalFiles)))
+}
+
+func NumberPrefix(width, index int) string {
+	return fmt.Sprintf("%0*d_", width, index)
+}
+
+func SectionBaseName(section Section, used map[string]int) string {
+	if section.Heading == "" {
+		return "00-preamble"
+	}
+	return EnsureUniqueFilename(section.Slug, used)
+}
+
+func SectionFilename(section Section, used map[string]int, numberPrefix string) string {
+	return numberPrefix + SectionBaseName(section, used) + ".md"
 }
 
 func EnsureUniqueFilename(base string, used map[string]int) string {
