@@ -202,6 +202,35 @@ mdstats --exclude CHANGELOG.md --exclude "docs/generated/**" .
 
 When analyzing folders, `mdstats` skips common generated/vendor directories (`.git`, `node_modules`, `vendor`, `bin`, `obj`, `dist`, `build`).
 
+### mdcheck
+
+Validate a Markdown file's heading structure: missing or multiple H1s,
+skipped heading levels, duplicate headings, empty headings, and an optional
+maximum heading level.
+
+```bash
+mdcheck README.md
+mdcheck --json README.md
+mdcheck --no-duplicates --allow-multiple-h1 README.md
+mdcheck --max-level 3 README.md
+mdcheck --group-by-rule README.md
+```
+
+#### Exit codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | No issues found |
+| 1 | One or more issues found |
+| 2 | Internal failure |
+
+#### Example output
+
+```text
+line 1: [multiple-h1] H1 "Second Title": document has more than one H1 heading
+line 5: [skipped-level] H3 "Details": skipped heading level (H1 followed by H3)
+```
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
