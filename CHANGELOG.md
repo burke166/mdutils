@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `.github/workflows/release.yml` — pushing a `v*.*.*` tag now automatically
+  runs the test suite, cross-compiles release binaries, packages them per
+  platform, and publishes a GitHub Release with the archives attached.
+
 ## [0.1.1] - 2026-08-17
 
 ### Added
