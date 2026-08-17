@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-08-17
+
 ### Added
 
 - `.github/workflows/release.yml` — pushing a `v*.*.*` tag now automatically
@@ -54,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tools/build` and `scripts/build-all.{sh,ps1}` — build all `cmd/*` binaries
   into `bin/` in one step.
 
-[Unreleased]: https://github.com/burke166/mdutils/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/burke166/mdutils/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/burke166/mdutils/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/burke166/mdutils/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/burke166/mdutils/releases/tag/v0.1.0
