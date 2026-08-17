@@ -32,7 +32,10 @@ targeting Go 1.26.
   writing helpers.
 - `tools/build/` — a small Go program (not a CLI tool for end users) that
   globs `cmd/*`, builds each directory containing a `main.go`, and writes
-  binaries to `bin/`.
+  binaries to `bin/`. `--release` instead cross-compiles every tool for a
+  fixed platform matrix (`windows/amd64`, `linux/amd64`, `linux/arm64`,
+  `darwin/amd64`, `darwin/arm64`) into `dist/<goos>_<goarch>/`, with
+  `CGO_ENABLED=0` — safe because the module has no cgo dependencies.
 - `testdata/` — shared Markdown fixtures used by multiple tools' tests.
 - `dist/` — placeholder for built distribution artifacts (kept in Git via
   `dist/.gitkeep`; contents are gitignored).
@@ -93,6 +96,11 @@ go run ./tools/build
 # or, via the wrapper scripts:
 scripts/build-all.sh      # POSIX
 scripts/build-all.ps1     # PowerShell
+
+# Cross-compile every cmd/* binary for all release platforms into dist/
+go run ./tools/build --release
+scripts/build-all.sh --release
+scripts/build-all.ps1 --release
 
 # Compile-check everything
 go build ./...

@@ -1,1 +1,1 @@
-go run ./tools/build
+go run ./tools/build @args

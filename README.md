@@ -8,7 +8,17 @@ A collection of small, focused command-line utilities for working with Markdown 
 go run ./tools/build
 ```
 
-Binaries are written to `bin/`.
+Binaries are written to `bin/` for the host platform.
+
+### Cross-platform release builds
+
+```bash
+go run ./tools/build --release
+```
+
+Builds every tool for `windows/amd64`, `linux/amd64`, `linux/arm64`,
+`darwin/amd64`, and `darwin/arm64`, writing each platform's binaries to
+`dist/<goos>_<goarch>/`.
 
 ## Tools
 
