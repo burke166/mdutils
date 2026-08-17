@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-08-17
+
+### Added
+
+- `tools/build --release` — cross-compile every tool for `windows/amd64`,
+  `linux/amd64`, `linux/arm64` (Raspberry Pi, AWS Graviton), `darwin/amd64`,
+  and `darwin/arm64` into `dist/<goos>_<goarch>/`. The default
+  `go run ./tools/build` still builds only for the host platform into `bin/`.
+
+### Documentation
+
+- Document `mdcheck` in `README.md` (it was implemented and tested but
+  missing from the tool list).
+
 ## [0.1.0] - 2026-08-17
 
 ### Added
@@ -34,5 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `tools/build` and `scripts/build-all.{sh,ps1}` — build all `cmd/*` binaries
   into `bin/` in one step.
 
-[Unreleased]: https://github.com/burke166/mdutils/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/burke166/mdutils/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/burke166/mdutils/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/burke166/mdutils/releases/tag/v0.1.0
